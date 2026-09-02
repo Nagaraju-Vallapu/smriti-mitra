@@ -7,6 +7,12 @@
 .buildlog/
 .history
 
+venv/
+.env
+__pycache__/
+*.pyc
+.vscode/
+
 
 
 # Flutter repo-specific
