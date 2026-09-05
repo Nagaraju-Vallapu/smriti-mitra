@@ -16,8 +16,8 @@ class User(Base):
     language = Column(String(50), default="English")
     created_at = Column(DateTime, server_default=func.now())
 
-elderly_profile = relationship(
-    "ElderlyProfile",
-    back_populates="user",
-    uselist=False
-)
+    elderly_profile = relationship(
+        "ElderlyProfile",
+        back_populates="user",
+        uselist=False
+    )

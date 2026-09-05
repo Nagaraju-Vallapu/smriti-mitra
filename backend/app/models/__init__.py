@@ -6,3 +6,4 @@ from app.models.health_worker import HealthWorker
 from app.models.cognitive_game import CognitiveGame
 from app.models.game_session import GameSession
 from app.models.performance_record import PerformanceRecord
+from app.models.reminder import Reminder

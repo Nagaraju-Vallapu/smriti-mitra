@@ -1,6 +1,13 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+from app.api.users import router as users_router
+from app.api.elderly_profiles import router as elderly_profiles_router
+from app.api.game_sessions import router as game_sessions_router
+from app.api.performance_records import (
+    router as performance_records_router
+)
+from app.api.reminders import router as reminders_router
 
 from app.database import get_db
 
@@ -21,6 +28,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.include_router(users_router)
+app.include_router(elderly_profiles_router)
+app.include_router(game_sessions_router)
+app.include_router(performance_records_router)
+app.include_router(reminders_router)
 
 @app.get("/")
 def root():
