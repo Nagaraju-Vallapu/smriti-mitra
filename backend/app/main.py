@@ -8,6 +8,7 @@ from app.api.performance_records import (
     router as performance_records_router
 )
 from app.api.reminders import router as reminders_router
+from app.api.cognitive_games import router as cognitive_games_router
 
 from app.database import get_db
 
@@ -33,6 +34,7 @@ app.include_router(elderly_profiles_router)
 app.include_router(game_sessions_router)
 app.include_router(performance_records_router)
 app.include_router(reminders_router)
+app.include_router(cognitive_games_router)
 
 @app.get("/")
 def root():
