@@ -8,6 +8,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/date_utils.dart';
 import '../../../utils/id_generator.dart';
 import '../../../widgets/game_result_view.dart';
+import '../../../widgets/ne_background.dart';
 
 class _RoutineTask {
   final String id;
@@ -131,7 +132,7 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
       final score = (100 - _mistakes * 10).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_routineOrder'))),
-        body: GameResultView(
+        body: NeBackground(child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
@@ -142,7 +143,7 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
             MaterialPageRoute(builder: (_) => RoutineOrderScreen(difficulty: widget.difficulty)),
           ),
           onBackToGames: () => _submitAndExit(context, completed: true),
-        ),
+        )),
       );
     }
 
@@ -154,7 +155,7 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
@@ -172,7 +173,7 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
             ],
           ],
         ),
-      ),
+      )),
     );
   }
 }

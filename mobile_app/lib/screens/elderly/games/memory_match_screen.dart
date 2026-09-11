@@ -9,6 +9,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/date_utils.dart';
 import '../../../utils/id_generator.dart';
 import '../../../widgets/game_result_view.dart';
+import '../../../widgets/ne_background.dart';
 
 class _CardModel {
   final String id;
@@ -158,7 +159,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
       final score = (100 - _mistakes * 8).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_memoryMatch'))),
-        body: GameResultView(
+        body: NeBackground(child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
@@ -167,7 +168,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
           submitting: _submitting,
           onPlayAgain: _restart,
           onBackToGames: () => _submitAndExit(context, completed: true),
-        ),
+        )),
       );
     }
 
@@ -181,7 +182,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -215,7 +216,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

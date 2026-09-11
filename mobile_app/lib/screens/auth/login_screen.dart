@@ -9,6 +9,7 @@ import '../../utils/validators.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/ne_pattern_strip.dart';
 import '../../widgets/status_banner.dart';
+import '../../widgets/ne_background.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: NePatternStrip(),
           ),
         ),
-        body: SafeArea(
+        body: NeBackground(child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Form(
@@ -205,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-        ),
+        )),
       ),
     );
   }

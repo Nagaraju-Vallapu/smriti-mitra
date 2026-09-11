@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import '../../localization/app_localizations.dart';
 import '../../models/game_performance.dart';
 import '../../services/game_performance_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/constants.dart';
 import '../../utils/date_utils.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/state_widgets.dart';
+import '../../widgets/ne_background.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -30,7 +33,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(t('progress_title'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<List<GamePerformance>>(
           future: _future,
           builder: (context, snapshot) {
@@ -65,6 +68,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   AppCard(
                     child: Row(
                       children: [
+                        IconTile(
+                          background: Theme.of(context).extension<AppColorsExtension>()!.colors.accentSkyLight,
+                          foreground: Theme.of(context).extension<AppColorsExtension>()!.colors.accentSky,
+                          icon: Icons.show_chart,
+                          size: 44,
+                        ),
+                        const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +90,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium
-                                ?.copyWith(fontSize: 22)),
+                                ?.copyWith(
+                                    fontSize: 22,
+                                    color: Theme.of(context).extension<AppColorsExtension>()!.colors.primaryDark)),
                       ],
                     ),
                   ),
@@ -90,7 +102,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
             );
           },
         ),
-      ),
+      )),
     );
   }
 

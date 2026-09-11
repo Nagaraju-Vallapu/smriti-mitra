@@ -6,6 +6,7 @@ import '../../../widgets/app_button.dart';
 import 'memory_match_screen.dart';
 import 'pattern_recall_screen.dart';
 import 'routine_order_screen.dart';
+import '../../../widgets/ne_background.dart';
 
 /// Difficulty picker shown before any of the three games. Navigates to
 /// the concrete game screen (which self-registers its GamePerformance on
@@ -37,7 +38,7 @@ class GameDifficultyScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(t('games_selectDifficulty'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -61,7 +62,7 @@ class GameDifficultyScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

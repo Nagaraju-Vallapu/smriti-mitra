@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../localization/app_localizations.dart';
 import '../../services/caregiver_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/state_widgets.dart';
 import '../../widgets/ne_pattern_strip.dart';
 import 'caregiver_tab_controller.dart';
+import '../../widgets/ne_background.dart';
 
 class CaregiverDashboardScreen extends StatefulWidget {
   const CaregiverDashboardScreen({super.key});
@@ -35,7 +38,7 @@ class _CaregiverDashboardScreenState extends State<CaregiverDashboardScreen> {
           child: NePatternStrip(),
         ),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<CaregiverDashboardSummary>(
           future: _future,
           builder: (context, snapshot) {
@@ -78,18 +81,24 @@ class _CaregiverDashboardScreenState extends State<CaregiverDashboardScreen> {
                 const SizedBox(height: AppSpacing.xl),
                 _ShortcutCard(
                   icon: '👤',
+                  tileBg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentSkyLight,
+                  tileFg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentSky,
                   label: t('caregiverDashboard_patient'),
                   onTap: () => CaregiverTabController.of(context)?.goToTab(3),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _ShortcutCard(
                   icon: '🧠',
+                  tileBg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentVioletLight,
+                  tileFg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentViolet,
                   label: t('caregiverDashboard_performance'),
                   onTap: () => CaregiverTabController.of(context)?.goToTab(1),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _ShortcutCard(
                   icon: '🔔',
+                  tileBg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentRoseLight,
+                  tileFg: Theme.of(context).extension<AppColorsExtension>()!.colors.accentRose,
                   label: t('caregiverDashboard_alerts'),
                   onTap: () => CaregiverTabController.of(context)?.goToTab(2),
                 ),
@@ -97,7 +106,7 @@ class _CaregiverDashboardScreenState extends State<CaregiverDashboardScreen> {
             );
           },
         ),
-      ),
+      )),
     );
   }
 }
@@ -128,7 +137,15 @@ class _ShortcutCard extends StatelessWidget {
   final String icon;
   final String label;
   final VoidCallback onTap;
-  const _ShortcutCard({required this.icon, required this.label, required this.onTap});
+  final Color tileBg;
+  final Color tileFg;
+  const _ShortcutCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    required this.tileBg,
+    required this.tileFg,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +153,7 @@ class _ShortcutCard extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Text(icon, style: const TextStyle(fontSize: 28)),
+          IconTile(background: tileBg, foreground: tileFg, emoji: icon, size: 48),
           const SizedBox(width: AppSpacing.md),
           Expanded(child: Text(label, style: Theme.of(context).textTheme.titleLarge)),
           const Icon(Icons.chevron_right),

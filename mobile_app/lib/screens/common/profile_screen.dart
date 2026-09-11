@@ -11,6 +11,7 @@ import '../../utils/validators.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/ne_pattern_strip.dart';
+import '../../widgets/ne_background.dart';
 
 /// Displays the registered profile and allows editing.
 /// User ID is never editable. Changes are saved locally.
@@ -243,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
         ],
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _profile == null
@@ -270,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ],
                   ),
-      ),
+      )),
     );
   }
 

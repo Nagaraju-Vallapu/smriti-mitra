@@ -8,6 +8,7 @@ import '../../../utils/date_utils.dart';
 import '../../../widgets/app_card.dart';
 import '../../../widgets/state_widgets.dart';
 import '../../../widgets/status_pill.dart';
+import '../../../widgets/ne_background.dart';
 
 class ReminderCategoryScreen extends StatefulWidget {
   final ReminderType type;
@@ -32,7 +33,7 @@ class _ReminderCategoryScreenState extends State<ReminderCategoryScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(t('reminders_${widget.type.name}'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<List<Reminder>>(
           future: _future,
           builder: (context, snapshot) {
@@ -75,7 +76,7 @@ class _ReminderCategoryScreenState extends State<ReminderCategoryScreen> {
             );
           },
         ),
-      ),
+      )),
     );
   }
 }

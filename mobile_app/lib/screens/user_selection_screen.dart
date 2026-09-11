@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 import '../localization/app_localizations.dart';
 import '../models/user_role.dart';
 import '../navigation/app_state.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/app_card.dart';
+import '../widgets/icon_tile.dart';
 import '../widgets/ne_pattern_strip.dart';
 import '../utils/constants.dart';
+import '../widgets/ne_background.dart';
 
 class UserSelectionScreen extends StatelessWidget {
   const UserSelectionScreen({super.key});
@@ -15,6 +18,7 @@ class UserSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
     final appState = context.read<AppState>();
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
 
     Future<void> selectRole(UserRole role) async {
       await appState.setRole(role);
@@ -27,7 +31,7 @@ class UserSelectionScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -46,7 +50,12 @@ class UserSelectionScreen extends StatelessWidget {
                 onTap: () => selectRole(UserRole.elderly),
                 child: Column(
                   children: [
-                    const Text('🧓', style: TextStyle(fontSize: 56)),
+                    IconTile(
+                      background: colors.accentPeachLight,
+                      foreground: colors.accentPeach,
+                      emoji: '🧓',
+                      size: 84,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Text(t('userSelect_elderly'),
                         style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
@@ -58,7 +67,12 @@ class UserSelectionScreen extends StatelessWidget {
                 onTap: () => selectRole(UserRole.caregiver),
                 child: Column(
                   children: [
-                    const Text('🩺', style: TextStyle(fontSize: 56)),
+                    IconTile(
+                      background: colors.accentSkyLight,
+                      foreground: colors.accentSky,
+                      emoji: '🩺',
+                      size: 84,
+                    ),
                     const SizedBox(height: AppSpacing.md),
                     Text(t('userSelect_caregiver'),
                         style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
@@ -68,7 +82,7 @@ class UserSelectionScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

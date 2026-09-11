@@ -4,6 +4,7 @@ import '../../localization/app_localizations.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/ne_pattern_strip.dart';
 import 'elderly_tab_controller.dart';
 
@@ -33,10 +34,10 @@ class ElderlyHomeScreen extends StatelessWidget {
     final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
 
     final items = [
-      ('elderlyHome_games', '🧩', 1),
-      ('elderlyHome_reminders', '⏰', 2),
-      ('elderlyHome_progress', '📈', 3),
-      ('elderlyHome_settings', '⚙️', 4),
+      ('elderlyHome_games', '🧩', 1, colors.accentVioletLight, colors.accentViolet),
+      ('elderlyHome_reminders', '⏰', 2, colors.accentPeachLight, colors.accentPeach),
+      ('elderlyHome_progress', '📈', 3, colors.accentSkyLight, colors.accentSky),
+      ('elderlyHome_settings', '⚙️', 4, colors.accentRoseLight, colors.accentRose),
     ];
 
     return SafeArea(
@@ -66,7 +67,7 @@ class ElderlyHomeScreen extends StatelessWidget {
               // icon + spacing + label at the old 1.05 ratio).
               childAspectRatio: 0.92,
               children: items.map((item) {
-                final (key, icon, tabIndex) = item;
+                final (key, icon, tabIndex, tileBg, tileFg) = item;
                 return AppCard(
                   onTap: () => ElderlyTabController.of(context)?.goToTab(tabIndex),
                   // Smaller padding than AppCard's 24px default frees up
@@ -77,7 +78,7 @@ class ElderlyHomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(icon, style: const TextStyle(fontSize: 40)),
+                      IconTile(background: tileBg, foreground: tileFg, emoji: icon, size: 56),
                       const SizedBox(height: AppSpacing.sm),
                       // Flexible + maxLines as a safety net: if a label
                       // ever runs long in another language, it shrinks

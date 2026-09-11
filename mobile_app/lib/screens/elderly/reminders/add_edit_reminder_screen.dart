@@ -5,6 +5,7 @@ import '../../../services/reminder_service.dart';
 import '../../../theme/app_spacing.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/ne_background.dart';
 
 class AddEditReminderScreen extends StatefulWidget {
   final Reminder? existing;
@@ -76,7 +77,7 @@ class _AddEditReminderScreenState extends State<AddEditReminderScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(_isEditing ? t('reminders_editReminder') : t('reminders_addReminder'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
@@ -114,7 +115,7 @@ class _AddEditReminderScreenState extends State<AddEditReminderScreen> {
             AppButton(label: t('common_save'), onPressed: _save, loading: _saving),
           ],
         ),
-      ),
+      )),
     );
   }
 }

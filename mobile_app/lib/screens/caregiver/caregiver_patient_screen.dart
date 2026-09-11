@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import '../../localization/app_localizations.dart';
 import '../../models/user_profile.dart';
 import '../../services/caregiver_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/state_widgets.dart';
+import '../../widgets/ne_background.dart';
 
 class CaregiverPatientScreen extends StatefulWidget {
   const CaregiverPatientScreen({super.key});
@@ -41,7 +44,7 @@ class _CaregiverPatientScreenState extends State<CaregiverPatientScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(t('patientProfile_title'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<UserProfile>(
           future: _future,
           builder: (context, snapshot) {
@@ -57,8 +60,21 @@ class _CaregiverPatientScreenState extends State<CaregiverPatientScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(patient.name,
-                          style: Theme.of(context).textTheme.headlineMedium),
+                      Row(
+                        children: [
+                          IconTile(
+                            background: Theme.of(context).extension<AppColorsExtension>()!.colors.primaryLight,
+                            foreground: Theme.of(context).extension<AppColorsExtension>()!.colors.primaryDark,
+                            icon: Icons.person,
+                            size: 56,
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Text(patient.name,
+                                style: Theme.of(context).textTheme.headlineMedium),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: AppSpacing.lg),
                       _InfoRow(
                           label: t('patientProfile_dateOfBirth'),
@@ -79,7 +95,7 @@ class _CaregiverPatientScreenState extends State<CaregiverPatientScreen> {
             );
           },
         ),
-      ),
+      )),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'games/games_list_screen.dart';
 import 'progress_screen.dart';
 import 'reminders/reminders_screen.dart';
 import 'settings_screen.dart';
+import '../../widgets/ne_background.dart';
 
 /// Bottom-nav shell for the five required Elderly sections: Home, Games,
 /// Reminders, Progress, Settings. Each tab keeps its own state via
@@ -57,10 +58,10 @@ class _ElderlyShellState extends State<ElderlyShell> {
     final voiceEnabled = context.watch<AppState>().accessibility.voiceAssistanceEnabled;
 
     return Scaffold(
-      body: ElderlyTabController(
+      body: NeBackground(child: ElderlyTabController(
         goToTab: (i) => setState(() => _index = i),
         child: IndexedStack(index: _index, children: _pages),
-      ),
+      )),
       floatingActionButton: voiceEnabled
           ? FloatingActionButton(
               heroTag: 'elderly-voice-fab',

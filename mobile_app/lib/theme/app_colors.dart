@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Standard palette — calm teal/sage, chosen to be easy on aging eyes.
-/// A subtle amber accent (echoing North-East Indian textile motifs used
-/// throughout the app's iconography) marks anything needing attention.
+/// Standard palette — warm cream surfaces with a deep forest teal-green
+/// primary and a terracotta/amber accent, echoing the woven textiles and
+/// hills of Northeast India. Chosen to stay calm and easy on aging eyes
+/// while giving the app a distinct, professional, regional identity.
 class AppColors {
   final Color background;
   final Color surface;
@@ -32,6 +33,18 @@ class AppColors {
   final Color caregiverAccent;
   final Color caregiverAccentLight;
 
+  // Decorative accent set used for the colourful rounded icon tiles seen
+  // throughout the reference UI (feature grids, activity chips, etc.).
+  // Purely cosmetic — never used for status/meaning.
+  final Color accentRose;
+  final Color accentRoseLight;
+  final Color accentViolet;
+  final Color accentVioletLight;
+  final Color accentSky;
+  final Color accentSkyLight;
+  final Color accentPeach;
+  final Color accentPeachLight;
+
   const AppColors({
     required this.background,
     required this.surface,
@@ -54,36 +67,54 @@ class AppColors {
     required this.borderStrong,
     required this.caregiverAccent,
     required this.caregiverAccentLight,
+    required this.accentRose,
+    required this.accentRoseLight,
+    required this.accentViolet,
+    required this.accentVioletLight,
+    required this.accentSky,
+    required this.accentSkyLight,
+    required this.accentPeach,
+    required this.accentPeachLight,
   });
 
   /// Standard-contrast palette.
   static const standard = AppColors(
-    background: Color(0xFFF4F7F5),
+    background: Color(0xFFFAF3E7),
     surface: Color(0xFFFFFFFF),
-    surfaceAlt: Color(0xFFEAF1EE),
-    primary: Color(0xFF0E6E5C),
-    primaryDark: Color(0xFF0A4F42),
-    primaryLight: Color(0xFFDCEFE9),
-    secondary: Color(0xFF1D5B79),
-    accentAmber: Color(0xFFC77B12),
-    accentAmberLight: Color(0xFFFBEBD5),
+    surfaceAlt: Color(0xFFF0E9D8),
+    primary: Color(0xFF0C6B54),
+    primaryDark: Color(0xFF07473A),
+    primaryLight: Color(0xFFDCEFE5),
+    secondary: Color(0xFF1D6B86),
+    accentAmber: Color(0xFFC96A1D),
+    accentAmberLight: Color(0xFFFBE6D2),
     success: Color(0xFF1E8E5A),
-    warning: Color(0xFFC77B12),
+    warning: Color(0xFFC96A1D),
     danger: Color(0xFFB3261E),
     dangerLight: Color(0xFFFBE4E2),
-    textPrimary: Color(0xFF122622),
-    textSecondary: Color(0xFF3F5750),
-    textMuted: Color(0xFF6B8079),
+    textPrimary: Color(0xFF1B2621),
+    textSecondary: Color(0xFF4C5C55),
+    textMuted: Color(0xFF7C8C84),
     textOnPrimary: Color(0xFFFFFFFF),
-    border: Color(0xFFD3E2DC),
-    borderStrong: Color(0xFF9FB8B0),
-    caregiverAccent: Color(0xFF1D5B79),
+    border: Color(0xFFE6DAC0),
+    borderStrong: Color(0xFFB8A67E),
+    caregiverAccent: Color(0xFF1D6B86),
     caregiverAccentLight: Color(0xFFDCEAF1),
+    accentRose: Color(0xFFC4497B),
+    accentRoseLight: Color(0xFFF8E1EB),
+    accentViolet: Color(0xFF6E5AA8),
+    accentVioletLight: Color(0xFFE7E1F5),
+    accentSky: Color(0xFF2E7FB0),
+    accentSkyLight: Color(0xFFDCEDF7),
+    accentPeach: Color(0xFFDB8A3B),
+    accentPeachLight: Color(0xFFFBEBD6),
   );
 
   /// High-contrast palette — pure black/white with saturated accents,
   /// used when the user turns on "High Contrast" in Settings. This
-  /// actually swaps the theme, not just a filter.
+  /// actually swaps the theme, not just a filter. Decorative background
+  /// art is suppressed on this palette (see NeBackground) so contrast
+  /// is never compromised.
   static const highContrast = AppColors(
     background: Color(0xFFFFFFFF),
     surface: Color(0xFFFFFFFF),
@@ -106,6 +137,14 @@ class AppColors {
     borderStrong: Color(0xFF000000),
     caregiverAccent: Color(0xFF00324A),
     caregiverAccentLight: Color(0xFFCFE3F0),
+    accentRose: Color(0xFF7A0033),
+    accentRoseLight: Color(0xFFFFD6E6),
+    accentViolet: Color(0xFF2E2066),
+    accentVioletLight: Color(0xFFE1D6FF),
+    accentSky: Color(0xFF00324A),
+    accentSkyLight: Color(0xFFCFE3F0),
+    accentPeach: Color(0xFF7A3A00),
+    accentPeachLight: Color(0xFFFFE1B0),
   );
 }
 

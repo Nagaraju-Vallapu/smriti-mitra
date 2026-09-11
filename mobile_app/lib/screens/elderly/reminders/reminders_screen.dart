@@ -2,20 +2,34 @@ import 'package:flutter/material.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/reminder.dart';
 import '../../../services/reminder_service.dart';
+import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
 import '../../../utils/constants.dart';
 import '../../../utils/date_utils.dart';
 import '../../../widgets/app_card.dart';
+import '../../../widgets/icon_tile.dart';
 import '../../../widgets/state_widgets.dart';
 import '../../../widgets/status_pill.dart';
 import 'add_edit_reminder_screen.dart';
 import 'reminder_category_screen.dart';
+import '../../../widgets/ne_background.dart';
 
 const _categoryIcons = {
   ReminderType.medication: '💊',
   ReminderType.hydration: '💧',
   ReminderType.appointment: '🏥',
 };
+
+(Color, Color) _categoryTileColors(AppColors colors, ReminderType type) {
+  switch (type) {
+    case ReminderType.medication:
+      return (colors.accentRoseLight, colors.accentRose);
+    case ReminderType.hydration:
+      return (colors.accentSkyLight, colors.accentSky);
+    case ReminderType.appointment:
+      return (colors.accentPeachLight, colors.accentPeach);
+  }
+}
 
 class RemindersScreen extends StatefulWidget {
   const RemindersScreen({super.key});
@@ -46,6 +60,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
 
     return Scaffold(
       appBar: AppBar(title: Text(t('reminders_title'))),
@@ -59,7 +74,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
         },
         child: const Icon(Icons.add),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: RefreshIndicator(
           onRefresh: _refresh,
           child: FutureBuilder<List<Reminder>>(
@@ -88,7 +103,12 @@ class _RemindersScreenState extends State<RemindersScreen> {
                             },
                             child: Column(
                               children: [
-                                Text(_categoryIcons[type]!, style: const TextStyle(fontSize: 28)),
+                                IconTile(
+                                  background: _categoryTileColors(colors, type).$1,
+                                  foreground: _categoryTileColors(colors, type).$2,
+                                  emoji: _categoryIcons[type]!,
+                                  size: 48,
+                                ),
                                 const SizedBox(height: AppSpacing.xs),
                                 Text(
                                   t('reminders_${type.name}'),
@@ -116,7 +136,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
             },
           ),
         ),
-      ),
+      )),
     );
   }
 }
@@ -129,9 +149,11 @@ class _ReminderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
     final status = reminder.completedToday
         ? 'completed'
         : (!reminder.enabled ? 'missed' : 'pending');
+    final tileColors = _categoryTileColors(colors, reminder.type);
 
     return AppCard(
       child: Column(
@@ -139,7 +161,12 @@ class _ReminderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(_categoryIcons[reminder.type]!, style: const TextStyle(fontSize: 26)),
+              IconTile(
+                background: tileColors.$1,
+                foreground: tileColors.$2,
+                emoji: _categoryIcons[reminder.type]!,
+                size: 44,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Column(

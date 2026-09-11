@@ -10,6 +10,7 @@ import '../../../utils/constants.dart';
 import '../../../utils/date_utils.dart';
 import '../../../utils/id_generator.dart';
 import '../../../widgets/game_result_view.dart';
+import '../../../widgets/ne_background.dart';
 
 const _configByDifficulty = {
   DifficultyLevels.easy: (gridSize: 4, rounds: 3),
@@ -155,7 +156,7 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
       final score = (100 - _mistakes * 10).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_patternRecall'))),
-        body: GameResultView(
+        body: NeBackground(child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
@@ -166,7 +167,7 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
             MaterialPageRoute(builder: (_) => PatternRecallScreen(difficulty: widget.difficulty)),
           ),
           onBackToGames: () => _submitAndExit(context, completed: true),
-        ),
+        )),
       );
     }
 
@@ -188,7 +189,7 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -225,7 +226,7 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }

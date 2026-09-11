@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import '../../localization/app_localizations.dart';
 import '../../models/alert_item.dart';
 import '../../services/caregiver_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_utils.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/state_widgets.dart';
 import '../../widgets/status_pill.dart';
+import '../../widgets/ne_background.dart';
 
 class CaregiverAlertsScreen extends StatefulWidget {
   const CaregiverAlertsScreen({super.key});
@@ -31,10 +34,11 @@ class _CaregiverAlertsScreenState extends State<CaregiverAlertsScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
 
     return Scaffold(
       appBar: AppBar(title: Text(t('alerts_title'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<List<AlertItem>>(
           future: _future,
           builder: (context, snapshot) {
@@ -53,6 +57,13 @@ class _CaregiverAlertsScreenState extends State<CaregiverAlertsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            IconTile(
+                              background: colors.accentRoseLight,
+                              foreground: colors.accentRose,
+                              icon: Icons.notifications_active_outlined,
+                              size: 40,
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
                             Expanded(
                               child: Text(alert.reminderTitle,
                                   style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 17)),
@@ -84,7 +95,7 @@ class _CaregiverAlertsScreenState extends State<CaregiverAlertsScreen> {
             );
           },
         ),
-      ),
+      )),
     );
   }
 }

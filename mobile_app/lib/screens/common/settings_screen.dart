@@ -5,12 +5,15 @@ import '../../localization/supported_locales.dart';
 import '../../models/accessibility_settings.dart';
 import '../../models/user_role.dart';
 import '../../navigation/app_state.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_card.dart';
+import '../../widgets/icon_tile.dart';
 import '../../widgets/ne_pattern_strip.dart';
 import 'profile_screen.dart';
 import '../../utils/constants.dart';
+import '../../widgets/ne_background.dart';
 
 /// Shared Settings screen used by BOTH the Elderly and Caregiver flows —
 /// per the spec, both roles have a "Settings" section with identical
@@ -89,6 +92,7 @@ class SettingsScreen extends StatelessWidget {
     final t = AppLocalizations.of(context).t;
     final appState = context.watch<AppState>();
     final settings = appState.accessibility;
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
 
     return Scaffold(
       appBar: AppBar(
@@ -98,7 +102,7 @@ class SettingsScreen extends StatelessWidget {
           child: NePatternStrip(),
         ),
       ),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: ListView(
           // Extra bottom padding so the Logout button never sits under the
           // floating voice-assistant mic button (it previously did, which
@@ -111,7 +115,12 @@ class SettingsScreen extends StatelessWidget {
             AppCard(
               child: ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.person_outline, size: 32),
+                leading: IconTile(
+                  background: colors.primaryLight,
+                  foreground: colors.primaryDark,
+                  icon: Icons.person_outline,
+                  size: 48,
+                ),
                 title: Text(t('profile_title'), style: Theme.of(context).textTheme.titleLarge),
                 subtitle: Text(t('profile_subtitle')),
                 trailing: const Icon(Icons.chevron_right),
@@ -253,7 +262,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

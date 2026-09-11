@@ -10,6 +10,7 @@ import 'caregiver_patient_screen.dart';
 import 'caregiver_performance_screen.dart';
 import 'caregiver_settings_screen.dart';
 import 'caregiver_tab_controller.dart';
+import '../../widgets/ne_background.dart';
 
 /// Bottom-nav shell for the five required Caregiver sections: Dashboard,
 /// Performance, Alerts, Patient, Settings.
@@ -48,10 +49,10 @@ class _CaregiverShellState extends State<CaregiverShell> {
     final voiceEnabled = context.watch<AppState>().accessibility.voiceAssistanceEnabled;
 
     return Scaffold(
-      body: CaregiverTabController(
+      body: NeBackground(child: CaregiverTabController(
         goToTab: (i) => setState(() => _index = i),
         child: IndexedStack(index: _index, children: _pages),
-      ),
+      )),
       floatingActionButton: voiceEnabled
           ? FloatingActionButton(
               heroTag: 'caregiver-voice-fab',

@@ -10,6 +10,7 @@ import '../../widgets/otp_countdown_timer.dart';
 import '../../widgets/otp_input_field.dart';
 import '../../widgets/password_requirements_view.dart';
 import '../../widgets/status_banner.dart';
+import '../../widgets/ne_background.dart';
 
 /// Forgot-password flow: registered Gmail → OTP → new password, matching
 /// the hand-drawn flow. Same one-screen-with-steps approach as
@@ -176,14 +177,14 @@ class _ForgotPasswordWizardScreenState extends State<ForgotPasswordWizardScreen>
             child: NePatternStrip(),
           ),
         ),
-        body: SafeArea(
+        body: NeBackground(child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: _step == 0
                 ? _buildGmailStep(t)
                 : (_step == 1 ? _buildOtpStep(t) : _buildNewPasswordStep(t)),
           ),
-        ),
+        )),
       ),
     );
   }

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import '../../localization/app_localizations.dart';
 import '../../models/game_performance.dart';
 import '../../services/caregiver_service.dart';
+import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../utils/date_utils.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/state_widgets.dart';
+import '../../widgets/ne_background.dart';
 
 /// Reads the SAME GamePerformance records the elderly Progress screen
 /// reads (via CaregiverService → GamePerformanceService), per the
@@ -63,7 +65,7 @@ class _CaregiverPerformanceScreenState extends State<CaregiverPerformanceScreen>
 
     return Scaffold(
       appBar: AppBar(title: Text(t('performance_title'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: FutureBuilder<(PatientCognitiveSummary, List<GamePerformance>)>(
           future: _future,
           builder: (context, snapshot) {
@@ -86,9 +88,19 @@ class _CaregiverPerformanceScreenState extends State<CaregiverPerformanceScreen>
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text('${summary.overallScore.round()}',
-                          style: Theme.of(context).textTheme.headlineMedium),
+                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              color: Theme.of(context).extension<AppColorsExtension>()!.colors.primaryDark)),
                       const SizedBox(height: AppSpacing.xs),
-                      LinearProgressIndicator(value: (summary.overallScore / 100).clamp(0, 1)),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadii.pill),
+                        child: LinearProgressIndicator(
+                          value: (summary.overallScore / 100).clamp(0, 1),
+                          minHeight: 10,
+                          backgroundColor:
+                              Theme.of(context).extension<AppColorsExtension>()!.colors.surfaceAlt,
+                          color: Theme.of(context).extension<AppColorsExtension>()!.colors.primary,
+                        ),
+                      ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         '${summary.gamesCompletedThisWeek} ${t('performance_gamesThisWeek')}',
@@ -137,7 +149,7 @@ class _CaregiverPerformanceScreenState extends State<CaregiverPerformanceScreen>
             );
           },
         ),
-      ),
+      )),
     );
   }
 }

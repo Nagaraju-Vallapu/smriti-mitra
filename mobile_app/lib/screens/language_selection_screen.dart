@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 import '../localization/app_localizations.dart';
 import '../localization/supported_locales.dart';
 import '../navigation/app_state.dart';
+import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/app_button.dart';
+import '../widgets/icon_tile.dart';
 import '../widgets/ne_pattern_strip.dart';
 import '../utils/constants.dart';
+import '../widgets/ne_background.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -30,7 +33,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
     final appState = context.watch<AppState>();
 
     return Scaffold(
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -56,6 +59,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     return _LanguageTile(
                       label: lang.label,
                       selected: selected,
+                      colorIndex: index,
                       onTap: () => setState(() => _selectedCode = lang.code),
                     );
                   },
@@ -74,7 +78,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }
@@ -82,21 +86,37 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
 class _LanguageTile extends StatelessWidget {
   final String label;
   final bool selected;
+  final int colorIndex;
   final VoidCallback onTap;
 
-  const _LanguageTile({required this.label, required this.selected, required this.onTap});
+  const _LanguageTile({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.colorIndex = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.extension<AppColorsExtension>()!.colors;
+    final palette = [
+      (colors.primaryLight, colors.primaryDark),
+      (colors.accentPeachLight, colors.accentPeach),
+      (colors.accentSkyLight, colors.accentSky),
+      (colors.accentRoseLight, colors.accentRose),
+      (colors.accentVioletLight, colors.accentViolet),
+    ];
+    final tile = palette[colorIndex % palette.length];
+
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppRadii.lg),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
         decoration: BoxDecoration(
           color: selected ? theme.colorScheme.primary.withOpacity(0.1) : theme.cardColor,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           border: Border.all(
             color: selected ? theme.colorScheme.primary : theme.dividerColor,
             width: selected ? 2 : 1,
@@ -104,6 +124,13 @@ class _LanguageTile extends StatelessWidget {
         ),
         child: Row(
           children: [
+            IconTile(
+              background: tile.$1,
+              foreground: tile.$2,
+              emoji: label.substring(0, 1),
+              size: 48,
+            ),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(label,
                   style: theme.textTheme.titleLarge?.copyWith(

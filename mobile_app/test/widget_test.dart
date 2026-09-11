@@ -5,17 +5,21 @@ import 'package:smriti_mitra/main.dart';
 import 'package:smriti_mitra/navigation/app_state.dart';
 
 void main() {
-  testWidgets('Smriti Mitra app loads', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => AppState(),
-        child: const SmritiMitraApp(),
-      ),
-    );
+  testWidgets(
+    'Smriti Mitra app starts successfully',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => AppState(),
+          child: const SmritiMitraApp(),
+        ),
+      );
 
-    // Allow the app to initialize.
-    await tester.pump();
+      // Allow the initial frame and app initialization to run.
+      await tester.pump();
 
-    expect(find.byType(SmritiMitraApp), findsOneWidget);
-  });
+      // The app should start without throwing an exception.
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

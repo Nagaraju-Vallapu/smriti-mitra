@@ -13,6 +13,7 @@ import '../../widgets/otp_countdown_timer.dart';
 import '../../widgets/otp_input_field.dart';
 import '../../widgets/password_requirements_view.dart';
 import '../../widgets/status_banner.dart';
+import '../../widgets/ne_background.dart';
 
 /// Multi-step registration:
 /// 0 = Basic Information (+ optional profile photo)
@@ -346,12 +347,12 @@ class _RegisterWizardScreenState extends State<RegisterWizardScreen> {
             child: NePatternStrip(),
           ),
         ),
-        body: SafeArea(
+        body: NeBackground(child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: _buildStep(t),
           ),
-        ),
+        )),
       ),
     );
   }

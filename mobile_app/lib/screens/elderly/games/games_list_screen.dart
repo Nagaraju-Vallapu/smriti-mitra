@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../localization/app_localizations.dart';
 import '../../../models/game_performance.dart';
+import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
 import '../../../widgets/app_card.dart';
+import '../../../widgets/icon_tile.dart';
 import 'game_difficulty_screen.dart';
+import '../../../widgets/ne_background.dart';
 
 class _GameDef {
   final String id;
@@ -25,10 +28,16 @@ class GamesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
+    final colors = Theme.of(context).extension<AppColorsExtension>()!.colors;
+    final tileColors = [
+      (colors.accentVioletLight, colors.accentViolet),
+      (colors.accentSkyLight, colors.accentSky),
+      (colors.accentPeachLight, colors.accentPeach),
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text(t('games_title'))),
-      body: SafeArea(
+      body: NeBackground(child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
@@ -41,7 +50,12 @@ class GamesListScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Text(game.icon, style: const TextStyle(fontSize: 40)),
+                    IconTile(
+                      background: tileColors[_games.indexOf(game) % tileColors.length].$1,
+                      foreground: tileColors[_games.indexOf(game) % tileColors.length].$2,
+                      emoji: game.icon,
+                      size: 56,
+                    ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
@@ -61,7 +75,7 @@ class GamesListScreen extends StatelessWidget {
             ],
           ],
         ),
-      ),
+      )),
     );
   }
 }
