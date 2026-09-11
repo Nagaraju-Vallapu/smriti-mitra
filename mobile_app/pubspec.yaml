@@ -23,6 +23,7 @@ dependencies:
   flutter_tts: ^4.0.2
   speech_to_text: ^7.0.0
   intl: 0.20.3
+  http: ^1.2.2
 
   # Optional profile photo (camera or gallery)
   image_picker: ^1.1.2

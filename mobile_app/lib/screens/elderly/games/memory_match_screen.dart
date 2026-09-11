@@ -16,7 +16,11 @@ class _CardModel {
   final String value;
   bool flipped;
   bool matched;
-  _CardModel({required this.id, required this.value, this.flipped = false, this.matched = false});
+  _CardModel(
+      {required this.id,
+      required this.value,
+      this.flipped = false,
+      this.matched = false});
 }
 
 const _icons = ['🍎', '🌸', '🐦', '☀️', '🎈', '🍀', '⭐', '🎵'];
@@ -43,6 +47,7 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
   late final String _sessionId;
   bool _finished = false;
   bool _submitting = false;
+  Map<String, dynamic>? _recommendation;
   Timer? _resolveTimer;
 
   int get _pairCount => _pairsByDifficulty[widget.difficulty] ?? 4;
@@ -74,7 +79,8 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
   }
 
   void _handleFlip(_CardModel card) {
-    if (card.flipped || card.matched || _flippedIds.length == 2 || _finished) return;
+    if (card.flipped || card.matched || _flippedIds.length == 2 || _finished)
+      return;
 
     setState(() {
       card.flipped = true;
@@ -103,15 +109,25 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
             _stopwatch.stop();
           }
         });
+        if (_finished) {
+          _submitAndExit(context, completed: true, exit: false);
+        }
       });
     }
   }
 
-  Future<void> _submitAndExit(BuildContext context, {required bool completed}) async {
+  Future<void> _submitAndExit(
+    BuildContext context, {
+    required bool completed,
+    bool exit = true,
+  }) async {
+    if (_submitting) return;
     setState(() => _submitting = true);
     final accuracy = _attempts == 0
         ? 0.0
-        : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+        : (((_attempts - _mistakes) / _attempts) * 100)
+            .clamp(0, 100)
+            .toDouble();
     final score = (100 - _mistakes * 8).clamp(0, 100);
 
     final performance = GamePerformance(
@@ -128,8 +144,14 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
       timestamp: AppDateUtils.nowIso8601(),
     );
 
-    await GamePerformanceService.instance.submit(performance);
-    if (context.mounted) Navigator.of(context).pop();
+    final recommendation =
+        await GamePerformanceService.instance.submit(performance);
+    if (!context.mounted) return;
+    setState(() {
+      _recommendation = recommendation;
+      _submitting = false;
+    });
+    if (exit) Navigator.of(context).pop();
   }
 
   void _restart() {
@@ -149,25 +171,29 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
-    final colors =
-        Theme.of(context).extension<AppColorsExtension>()?.colors ?? AppColors.standard;
+    final colors = Theme.of(context).extension<AppColorsExtension>()?.colors ??
+        AppColors.standard;
 
     if (_finished) {
       final accuracy = _attempts == 0
           ? 0.0
-          : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+          : (((_attempts - _mistakes) / _attempts) * 100)
+              .clamp(0, 100)
+              .toDouble();
       final score = (100 - _mistakes * 8).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_memoryMatch'))),
-        body: NeBackground(child: GameResultView(
+        body: NeBackground(
+            child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
           completionTime: _stopwatch.elapsed.inSeconds,
           attempts: _attempts,
           submitting: _submitting,
+          recommendation: _recommendation,
           onPlayAgain: _restart,
-          onBackToGames: () => _submitAndExit(context, completed: true),
+          onBackToGames: () => Navigator.of(context).pop(),
         )),
       );
     }
@@ -182,7 +208,8 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: NeBackground(child: SafeArea(
+      body: NeBackground(
+          child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -202,12 +229,15 @@ class _MemoryMatchScreenState extends State<MemoryMatchScreen> {
                       onTap: () => _handleFlip(card),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: card.matched ? colors.success.withOpacity(0.5) : colors.primaryLight,
+                          color: card.matched
+                              ? colors.success.withOpacity(0.5)
+                              : colors.primaryLight,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: colors.border, width: 2),
                         ),
                         alignment: Alignment.center,
-                        child: Text(revealed ? card.value : '❓', style: const TextStyle(fontSize: 28)),
+                        child: Text(revealed ? card.value : '❓',
+                            style: const TextStyle(fontSize: 28)),
                       ),
                     );
                   }).toList(),

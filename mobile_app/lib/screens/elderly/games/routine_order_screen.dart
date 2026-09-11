@@ -60,6 +60,7 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
   late final String _sessionId;
   bool _finished = false;
   bool _submitting = false;
+  Map<String, dynamic>? _recommendation;
 
   @override
   void initState() {
@@ -88,17 +89,25 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
           _finished = true;
           _stopwatch.stop();
         });
+        _submitAndExit(context, completed: true, exit: false);
       }
     } else {
       setState(() => _mistakes++);
     }
   }
 
-  Future<void> _submitAndExit(BuildContext context, {required bool completed}) async {
+  Future<void> _submitAndExit(
+    BuildContext context, {
+    required bool completed,
+    bool exit = true,
+  }) async {
+    if (_submitting) return;
     setState(() => _submitting = true);
     final accuracy = _attempts == 0
         ? 0.0
-        : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+        : (((_attempts - _mistakes) / _attempts) * 100)
+            .clamp(0, 100)
+            .toDouble();
     final score = (100 - _mistakes * 10).clamp(0, 100);
 
     final performance = GamePerformance(
@@ -115,34 +124,46 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
       timestamp: AppDateUtils.nowIso8601(),
     );
 
-    await GamePerformanceService.instance.submit(performance);
-    if (context.mounted) Navigator.of(context).pop();
+    final recommendation =
+        await GamePerformanceService.instance.submit(performance);
+    if (!context.mounted) return;
+    setState(() {
+      _recommendation = recommendation;
+      _submitting = false;
+    });
+    if (exit) Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
-    final colors =
-        Theme.of(context).extension<AppColorsExtension>()?.colors ?? AppColors.standard;
+    final colors = Theme.of(context).extension<AppColorsExtension>()?.colors ??
+        AppColors.standard;
 
     if (_finished) {
       final accuracy = _attempts == 0
           ? 0.0
-          : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+          : (((_attempts - _mistakes) / _attempts) * 100)
+              .clamp(0, 100)
+              .toDouble();
       final score = (100 - _mistakes * 10).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_routineOrder'))),
-        body: NeBackground(child: GameResultView(
+        body: NeBackground(
+            child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
           completionTime: _stopwatch.elapsed.inSeconds,
           attempts: _attempts,
           submitting: _submitting,
+          recommendation: _recommendation,
           onPlayAgain: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => RoutineOrderScreen(difficulty: widget.difficulty)),
+            MaterialPageRoute(
+                builder: (_) =>
+                    RoutineOrderScreen(difficulty: widget.difficulty)),
           ),
-          onBackToGames: () => _submitAndExit(context, completed: true),
+          onBackToGames: () => Navigator.of(context).pop(),
         )),
       );
     }
@@ -155,11 +176,13 @@ class _RoutineOrderScreenState extends State<RoutineOrderScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: NeBackground(child: SafeArea(
+      body: NeBackground(
+          child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
-            Text('${t('games_mistakes')}: $_mistakes', style: Theme.of(context).textTheme.bodyLarge),
+            Text('${t('games_mistakes')}: $_mistakes',
+                style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: AppSpacing.lg),
             for (final task in _shuffled) ...[
               _TaskTile(
@@ -202,7 +225,8 @@ class _TaskTile extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: selected ? colors.primaryLight : colors.surface,
-          border: Border.all(color: selected ? colors.primary : colors.border, width: 2),
+          border: Border.all(
+              color: selected ? colors.primary : colors.border, width: 2),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
@@ -211,13 +235,18 @@ class _TaskTile extends StatelessWidget {
               CircleAvatar(
                 radius: 14,
                 backgroundColor: colors.primary,
-                child: Text('$position', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                child: Text('$position',
+                    style: const TextStyle(color: Colors.white, fontSize: 13)),
               ),
               const SizedBox(width: AppSpacing.sm),
             ],
             Text(task.icon, style: const TextStyle(fontSize: 30)),
             const SizedBox(width: AppSpacing.md),
-            Text(task.label, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18)),
+            Text(task.label,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(fontSize: 18)),
           ],
         ),
       ),

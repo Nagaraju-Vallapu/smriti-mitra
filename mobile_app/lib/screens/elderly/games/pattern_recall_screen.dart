@@ -41,12 +41,14 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
   int? _litTile;
   bool _finished = false;
   bool _submitting = false;
+  Map<String, dynamic>? _recommendation;
   Timer? _playbackTimer;
 
   @override
   void initState() {
     super.initState();
-    _config = _configByDifficulty[widget.difficulty] ?? _configByDifficulty[DifficultyLevels.easy]!;
+    _config = _configByDifficulty[widget.difficulty] ??
+        _configByDifficulty[DifficultyLevels.easy]!;
     _sessionId = IdGenerator.sessionId(GameIds.patternRecall);
     _stopwatch = Stopwatch()..start();
     WidgetsBinding.instance.addPostFrameCallback((_) => _startRound(1));
@@ -60,7 +62,8 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
   }
 
   void _startRound(int roundNumber) {
-    final newSeq = List.generate(roundNumber + 2, (_) => _random.nextInt(_config.gridSize));
+    final newSeq = List.generate(
+        roundNumber + 2, (_) => _random.nextInt(_config.gridSize));
     setState(() {
       _sequence = newSeq;
       _userInput = [];
@@ -106,6 +109,7 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
           _finished = true;
           _stopwatch.stop();
         });
+        _submitAndExit(context, completed: true, exit: false);
       } else {
         final next = _round + 1;
         Timer(const Duration(milliseconds: 500), () {
@@ -118,11 +122,18 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
     }
   }
 
-  Future<void> _submitAndExit(BuildContext context, {required bool completed}) async {
+  Future<void> _submitAndExit(
+    BuildContext context, {
+    required bool completed,
+    bool exit = true,
+  }) async {
+    if (_submitting) return;
     setState(() => _submitting = true);
     final accuracy = _attempts == 0
         ? 0.0
-        : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+        : (((_attempts - _mistakes) / _attempts) * 100)
+            .clamp(0, 100)
+            .toDouble();
     final score = (100 - _mistakes * 10).clamp(0, 100);
 
     final performance = GamePerformance(
@@ -139,34 +150,46 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
       timestamp: AppDateUtils.nowIso8601(),
     );
 
-    await GamePerformanceService.instance.submit(performance);
-    if (context.mounted) Navigator.of(context).pop();
+    final recommendation =
+        await GamePerformanceService.instance.submit(performance);
+    if (!context.mounted) return;
+    setState(() {
+      _recommendation = recommendation;
+      _submitting = false;
+    });
+    if (exit) Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context).t;
-    final colors =
-        Theme.of(context).extension<AppColorsExtension>()?.colors ?? AppColors.standard;
+    final colors = Theme.of(context).extension<AppColorsExtension>()?.colors ??
+        AppColors.standard;
 
     if (_finished) {
       final accuracy = _attempts == 0
           ? 0.0
-          : (((_attempts - _mistakes) / _attempts) * 100).clamp(0, 100).toDouble();
+          : (((_attempts - _mistakes) / _attempts) * 100)
+              .clamp(0, 100)
+              .toDouble();
       final score = (100 - _mistakes * 10).clamp(0, 100);
       return Scaffold(
         appBar: AppBar(title: Text(t('games_patternRecall'))),
-        body: NeBackground(child: GameResultView(
+        body: NeBackground(
+            child: GameResultView(
           score: score,
           accuracy: accuracy,
           mistakes: _mistakes,
           completionTime: _stopwatch.elapsed.inSeconds,
           attempts: _attempts,
           submitting: _submitting,
+          recommendation: _recommendation,
           onPlayAgain: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => PatternRecallScreen(difficulty: widget.difficulty)),
+            MaterialPageRoute(
+                builder: (_) =>
+                    PatternRecallScreen(difficulty: widget.difficulty)),
           ),
-          onBackToGames: () => _submitAndExit(context, completed: true),
+          onBackToGames: () => Navigator.of(context).pop(),
         )),
       );
     }
@@ -189,7 +212,8 @@ class _PatternRecallScreenState extends State<PatternRecallScreen> {
           onPressed: () => _submitAndExit(context, completed: false),
         ),
       ),
-      body: NeBackground(child: SafeArea(
+      body: NeBackground(
+          child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
