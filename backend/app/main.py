@@ -9,6 +9,7 @@ from app.api.performance_records import (
 )
 from app.api.reminders import router as reminders_router
 from app.api.cognitive_games import router as cognitive_games_router
+from app.api.adaptive import router as adaptive_router
 
 from app.database import get_db
 
@@ -28,7 +29,7 @@ app = FastAPI(
     description="Backend API for the SMRITI MITRA cognitive assistance platform",
     version="1.0.0"
 )
-
+app.include_router(adaptive_router)
 app.include_router(users_router)
 app.include_router(elderly_profiles_router)
 app.include_router(game_sessions_router)
